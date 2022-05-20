@@ -1,8 +1,8 @@
-import React, {useState, useEffect} from "react";
+ import React, {useState, useEffect} from "react";
 import * as $ from 'jquery';
 import {app} from '../../firebase'
-import { getFirestore } from "firebase/firestore";
-import { doc, getDoc } from "firebase/firestore"; 
+import { collection, getFirestore } from "firebase/firestore";
+import { query,doc, getDoc, getDocs } from "firebase/firestore";
 
 
 import {
@@ -38,9 +38,9 @@ const Results = () => {
     const [Status, setStatus] = useState('SCHEDULED')
     const [League, setleague] = useState('PD')
     const [Stage, setStage] = useState('QUARTER_FINALS')
-    const [Matchday, setMatchday] = useState('30')
+    const [Matchday, setMatchday] = useState('34')
 
-    const [MatchdayPD, setMatchdayPD] = useState('30')
+    const [MatchdayPD, setMatchdayPD] = useState('')
     const [MatchdayPL, setMatchdayPL] = useState('')
     const [MatchdaySA, setMatchdaySA] = useState('')
     const [MatchdayBL1, setMatchdayBL1] = useState('');
@@ -52,7 +52,7 @@ const Results = () => {
 
     useEffect(() => {
         initializeStates()
-        fetchPD()
+        newFetchPD()
     }, []);
 
     //fetchleague
@@ -60,7 +60,7 @@ const Results = () => {
         console.log(Status)
         console.log(League)
         if (League === 'PD'){
-            fetchPD()
+            newFetchPD()
         }else if (League === 'PL') {
             fetchPL()
         } else if (League === 'SA') {
@@ -95,8 +95,8 @@ const Results = () => {
         const MatchdayPDref = doc(db, "currentMatchday", 'PD');
         const PDsnap =  await getDoc(MatchdayPDref);
         setleague('PD')
-        setMatchdayPD(PDsnap.data().matchday);
-        setMatchday(PDsnap.data().matchday);
+        setMatchdayPD(PDsnap.data().current);
+        setMatchday(PDsnap.data().current);
 
         const MatchdayPLref = doc(db, "currentMatchday", 'PL');
         const PLsnap =  await getDoc(MatchdayPLref);
@@ -112,6 +112,24 @@ const Results = () => {
     
     }
     //------- fetch results from API 
+
+    const newFetchPD = async() => {
+        var listArray =[]
+        const matchesRef = query(collection( db, "currentMatchday", 'PD', '34' ));
+        const querySnapshot = await getDocs(matchesRef);
+        querySnapshot.forEach((doc) => { 
+            listArray = listArray.concat(doc.data())
+            setList(listArray)
+            setleague('PD')
+            setMatchday('34')
+            console.log(listArray)
+            setPD('')
+            setPL('')
+            setSA('')
+        });
+
+
+    }
     //primera de espana - PD
     const fetchPD = async() => {
         var listArray =[]
@@ -332,7 +350,6 @@ const Results = () => {
     }    
     return(
         <>
-          
             <Container100><H1 variation = 'true'>MATCHDAY {Matchday}</H1></Container100>
             
             <ContainerCard>
@@ -342,7 +359,7 @@ const Results = () => {
                     <Tab isCurrent = {Live}>Live</Tab>
                 </HorizontalContainer>
                 <HorizontalContainerScroll>
-                    <LeagueButton  selected = {PD} onClick={fetchPD}><LeagueLogo src= 'assets/leaguesLogos/primeraLogo.svg'/></LeagueButton>
+                    <LeagueButton  selected = {PD} onClick={newFetchPD}><LeagueLogo src= 'assets/leaguesLogos/primeraLogo.svg'/></LeagueButton>
                     <LeagueButton  selected = {PL} onClick={fetchPL} ><LeagueLogo src= 'assets/leaguesLogos/premierLogo.svg'/></LeagueButton>
                     <LeagueButton  selected = {SA} onClick={fetchSA}><LeagueLogo src= 'assets/leaguesLogos/serieaLogo.svg'/></LeagueButton>
                     <LeagueButton  selected = {BL1} onClick={fetchBL1}><LeagueLogo src= 'assets/leaguesLogos/bundesligaLogo.svg'/></LeagueButton>
@@ -351,22 +368,22 @@ const Results = () => {
                     <LeagueButton  selected = ''><LeagueLogo src= 'assets/leaguesLogos/eflLogo.svg'/></LeagueButton>
                     <LeagueButton  selected = ''><LeagueLogo src= 'assets/leaguesLogos/championsLogo.svg'/></LeagueButton>
                 </HorizontalContainerScroll>
-                {List.map(({ id, awayTeam, homeTeam, score, utcDate, matchday}) => 
-                    <MatchOutterContainer key={id}>
+                {List.map((match, data, date) =>
+                    <MatchOutterContainer key={match.id}>
                         <MatchContainer>
                             <MatchSegment>
                                 <H2 variation = 'true'>Home</H2>
                                 <ResultSegment>
                                     <CellTeam>
-                                        <H2 >{homeTeam.name}</H2>
+                                        <H2 >{match.data[0]}</H2>
                                     </CellTeam>
-                                    <H2>{score.fullTime.homeTeam}</H2>
+                                        <H2>{match.data[1]}</H2>
                                 </ResultSegment>
                                 <ResultSegment>
                                     <CellTeam>
                                         <H3 variation = 'true'>1st half</H3>
                                     </CellTeam>
-                                    <H3 variation = 'true'>{score.halfTime.homeTeam}</H3>
+                                    <H3 variation = 'true'>{match.data[2]}</H3>
                                 </ResultSegment>
                             </MatchSegment>
 
@@ -374,27 +391,27 @@ const Results = () => {
                                 <H2 variation = 'true'>Away</H2>
                                 <ResultSegment>
                                     <CellTeam>
-                                        <H2 >{awayTeam.name}</H2>
+                                        <H2 >{match.data[3]}</H2>
                                     </CellTeam>
-                                    <H2>{score.fullTime.homeTeam}</H2>
+                                    <H2>{match.data[4]}</H2>
                                 </ResultSegment>
                                 <ResultSegment>
                                     <CellTeam>
                                         <H3 variation = 'true'>1st half</H3>
                                     </CellTeam>
-                                    <H3 variation = 'true'>{score.halfTime.homeTeam}</H3>
+                                    <H3 variation = 'true'>{match.data[5]}</H3>
                                 </ResultSegment>
                             </MatchSegment>
                         </MatchContainer>
                         <MatchHorizontalContainer>
                             <P variation='true'> 
-                                {utcDate}
+                                {match.date}
                             </P>
                             <P >
-                            {id}
+                            {}
                             </P>
                             <P>
-                               Matchday:{matchday}
+                               Matchday:{MatchdayPD}
                             </P>
                         </MatchHorizontalContainer>
                         <Container50></Container50>

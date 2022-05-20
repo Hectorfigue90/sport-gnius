@@ -29,7 +29,7 @@ const Intro = () => {
     //go to home
     const explore = (event) => {
         /* navigate("/dashboard");*/
-        navigate('/home')
+        navigate('/tournaments')
        
      }
     return (

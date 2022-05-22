@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from "react";
 import { useNavigate } from "react-router-dom";
 import { query,doc, getDoc, getDocs } from "firebase/firestore";
+import { collection, getFirestore } from "firebase/firestore";
 
 import * as $ from 'jquery';
 import { MainContainer,H1,H2,H3,P, MatchContainer, MatchHorizontalContainer, MatchOutterContainer,
@@ -8,11 +9,18 @@ MatchSegment, CellTeam,ResultSegment, Input , StyledUl, StyledLi, StyledA, DropD
 
 
 
-const Selector = () =>{
+const Selector = () =>{ 
   
       //api data
     const [List, setList] = useState([])
-  
+          //declare fireStore 
+          const db = getFirestore();
+          //firebase references
+    
+        useEffect(() => {
+            
+            newFetchPD()
+        }, []);
   const newFetchPD = async() => {
         var listArray =[]
         const matchesRef = query(collection( db, "currentMatchday", 'PD', '34' ));
@@ -22,6 +30,7 @@ const Selector = () =>{
             setList(listArray)
             console.log(listArray)
         });
+    }
         
         
     return(
@@ -144,6 +153,5 @@ const Selector = () =>{
         </MatchHorizontalContainer>
         </MatchOutterContainer>
         
-)}
-
+)}  
 export default Selector;

@@ -8,6 +8,26 @@ MatchSegment, CellTeam,ResultSegment, Input , StyledUl, StyledLi, StyledA, DropD
 
 
 const Selector = () =>{
+  
+      //api data
+    const [List, setList] = useState([])
+  
+  const newFetchPD = async() => {
+        var listArray =[]
+        const matchesRef = query(collection( db, "currentMatchday", 'PD', '34' ));
+        const querySnapshot = await getDocs(matchesRef);
+        querySnapshot.forEach((doc) => { 
+            listArray = listArray.concat(doc.data())
+            setList(listArray)
+            setleague('PD')
+            setMatchday('34')
+            console.log(listArray)
+            setPD('')
+            setPL('')
+            setSA('')
+        });
+        
+        
     return(
         <MatchOutterContainer >
         <MatchContainer>

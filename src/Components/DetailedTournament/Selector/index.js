@@ -34,13 +34,14 @@ const Selector = () =>{
         
         
     return(
-        <MatchOutterContainer >
+      {List.map((match, data, date) =>
+        <MatchOutterContainer key={match.ID}>
         <MatchContainer>
             <MatchSegment>
                 <H2 variation = 'true'>Home</H2>
                 <ResultSegment>
                     <CellTeam>
-                        <H2 >hola</H2>
+                        <H2 >{match.data[0]}</H2>
                     </CellTeam>
                         <Input></Input>
                 </ResultSegment>
@@ -56,7 +57,7 @@ const Selector = () =>{
                 <H2 variation = 'true'>Away</H2>
                 <ResultSegment>
                     <CellTeam>
-                        <H2 >hola2</H2>
+                        <H2 >{match.data[3]}</H2>
                     </CellTeam>
                         <Input></Input>
                 </ResultSegment>
@@ -152,6 +153,7 @@ const Selector = () =>{
             </P>
         </MatchHorizontalContainer>
         </MatchOutterContainer>
+        }
         
 )}  
 export default Selector;

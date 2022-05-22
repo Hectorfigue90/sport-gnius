@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from "react";
 import { useNavigate } from "react-router-dom";
+import { query,doc, getDoc, getDocs } from "firebase/firestore";
 
 import * as $ from 'jquery';
 import { MainContainer,H1,H2,H3,P, MatchContainer, MatchHorizontalContainer, MatchOutterContainer,
@@ -19,12 +20,7 @@ const Selector = () =>{
         querySnapshot.forEach((doc) => { 
             listArray = listArray.concat(doc.data())
             setList(listArray)
-            setleague('PD')
-            setMatchday('34')
             console.log(listArray)
-            setPD('')
-            setPL('')
-            setSA('')
         });
         
         

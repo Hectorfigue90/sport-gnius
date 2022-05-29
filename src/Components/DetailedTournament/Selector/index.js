@@ -88,10 +88,10 @@ const Selector = () =>{
                         <DropDownContent>
                             {" "}
                             <SubA onClick={() => this.handleClick("Link1")}>
-                                Link 1
+                                {match.data[0]}
                             </SubA>
                             <SubA onClick={() => this.handleClick("Link2")}>
-                                Link 2
+                                {match.data[3]}
                             </SubA>
                         </DropDownContent>
                     </DropDownLi>
@@ -122,12 +122,12 @@ const Selector = () =>{
                                 Choose
                             </StyledA>
                             <DropDownContent>
-                                {" "}
+                                {match.data[0]}
                                 <SubA onClick={() => this.handleClick("Link1")}>
-                                    Link 1
+                                    {}
                                 </SubA>
                                 <SubA onClick={() => this.handleClick("Link2")}>
-                                    Link 2
+                                   {match.data[3ßßß]}
                                 </SubA>
                             </DropDownContent>
                         </DropDownLi>
